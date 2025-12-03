@@ -1,0 +1,42 @@
+[
+  {
+    "id": "1",
+    "date": "10 FEV 24",
+    "type": "peticao",
+    "original_title": "Petição Inicial",
+    "ai_summary": "Início do processo: Protocolamos o pedido de indenização por danos morais devido ao extravio da mala em voo internacional.",
+    "whatsapp_message": "Olá! Demos entrada no processo pedindo a indenização da mala. Agora aguardamos o juiz receber o caso. Te aviso assim que tiver novidades!"
+  },
+  {
+    "id": "2",
+    "date": "15 FEV 24",
+    "type": "decisao",
+    "original_title": "Despacho - Citação",
+    "ai_summary": "O Juiz aceitou o processo e mandou a companhia aérea se defender em 15 dias.",
+    "whatsapp_message": "Boa notícia! O juiz aceitou nosso pedido e mandou intimar a companhia aérea. O processo começou a andar."
+  },
+  {
+    "id": "3",
+    "date": "20 MAR 24",
+    "type": "outros",
+    "original_title": "Contestação",
+    "ai_summary": "A Companhia Aérea apresentou defesa alegando que a culpa não foi dela (falha de conexão).",
+    "whatsapp_message": "Oi! A companhia aérea respondeu negando a culpa, como esperado. Agora vamos apresentar nossas contraprovas. Tudo dentro do previsto."
+  },
+  {
+    "id": "4",
+    "date": "10 MAI 24",
+    "type": "audiencia",
+    "original_title": "Ata de Audiência de Conciliação",
+    "ai_summary": "Tentativa de acordo: A empresa ofereceu R$ 500,00. Recusamos por ser valor irrisório.",
+    "whatsapp_message": "Atualização: A empresa ofereceu só R$ 500,00 na audiência hoje. Recusamos porque você tem direito a mais. O processo segue para sentença."
+  },
+  {
+    "id": "5",
+    "date": "05 AGO 24",
+    "type": "decisao",
+    "original_title": "Sentença com Resolução de Mérito",
+    "ai_summary": "VITÓRIA: Juiz condenou a empresa a pagar R$ 8.000,00 (Danos Morais) + Valor da mala.",
+    "whatsapp_message": "Temos Sentença! GANHAMOS! O juiz condenou a empresa a pagar R$ 8.000,00 mais o valor da mala. Ótima vitória!"
+  }
+]
