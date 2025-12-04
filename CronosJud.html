@@ -42,8 +42,11 @@
         }
 
         /* Scrollbar Invisível mas funcional */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .no-scrollbar::-webkit-scrollbar { width: 6px; }
+        .no-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .no-scrollbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+        .no-scrollbar::-webkit-scrollbar-thumb:hover { background: #64748B; }
+        .no-scrollbar { scrollbar-width: thin; scrollbar-color: #475569 transparent; }
     </style>
 </head>
 <body class="text-slate-800 h-screen flex overflow-hidden">
@@ -62,10 +65,10 @@
         </div>
 
         <!-- Clientes Lista -->
-        <div class="flex-1 overflow-y-auto py-6 space-y-1 no-scrollbar">
-            <div class="px-6 mb-3 flex justify-between items-center">
+        <div class="flex-1 overflow-y-auto py-6 space-y-1 no-scrollbar hover:scrollbar-thin" style="scrollbar-width: thin; scrollbar-color: #475569 transparent;">
+            <div class="px-6 mb-3 flex justify-between items-center sticky top-0 bg-brand-900 pb-2 z-10">
                 <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Processos Ativos</span>
-                <span class="bg-blue-600 text-white text-[10px] px-1.5 rounded font-bold">2</span>
+                <span class="bg-blue-600 text-white text-[10px] px-1.5 rounded font-bold">5</span>
             </div>
             
             <!-- Cliente Demo (Maria) -->
@@ -83,11 +86,44 @@
             <!-- Cliente Demo (João - Vazio) -->
             <button onclick="switchClient('joao')" id="btn-joao" class="w-full text-left flex items-center px-6 py-4 border-l-4 border-transparent hover:bg-slate-800 transition-all opacity-60 hover:opacity-100">
                 <div class="relative">
-                    <img src="https://ui-avatars.com/api/?name=Joao+Souza&background=random" class="w-10 h-10 rounded-full border-2 border-slate-600">
+                    <img src="https://ui-avatars.com/api/?name=Joao+Souza&background=6366F1" class="w-10 h-10 rounded-full border-2 border-slate-600">
                 </div>
                 <div class="ml-3">
                     <p class="text-sm font-semibold text-white">João Souza</p>
                     <p class="text-xs text-slate-400">Revisional Bancária</p>
+                </div>
+            </button>
+
+            <!-- Cliente Demo (Ana) -->
+            <button onclick="switchClient('ana')" id="btn-ana" class="w-full text-left flex items-center px-6 py-4 border-l-4 border-transparent hover:bg-slate-800 transition-all opacity-60 hover:opacity-100">
+                <div class="relative">
+                    <img src="https://ui-avatars.com/api/?name=Ana+Costa&background=EC4899&color=fff" class="w-10 h-10 rounded-full border-2 border-slate-600">
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm font-semibold text-white">Ana Costa</p>
+                    <p class="text-xs text-slate-400">Trabalhista vs. Empresa X</p>
+                </div>
+            </button>
+
+            <!-- Cliente Demo (Carlos) -->
+            <button onclick="switchClient('carlos')" id="btn-carlos" class="w-full text-left flex items-center px-6 py-4 border-l-4 border-transparent hover:bg-slate-800 transition-all opacity-60 hover:opacity-100">
+                <div class="relative">
+                    <img src="https://ui-avatars.com/api/?name=Carlos+Mendes&background=F59E0B&color=fff" class="w-10 h-10 rounded-full border-2 border-slate-600">
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm font-semibold text-white">Carlos Mendes</p>
+                    <p class="text-xs text-slate-400">Divórcio Litigioso</p>
+                </div>
+            </button>
+
+            <!-- Cliente Demo (Fernanda) -->
+            <button onclick="switchClient('fernanda')" id="btn-fernanda" class="w-full text-left flex items-center px-6 py-4 border-l-4 border-transparent hover:bg-slate-800 transition-all opacity-60 hover:opacity-100">
+                <div class="relative">
+                    <img src="https://ui-avatars.com/api/?name=Fernanda+Lima&background=10B981&color=fff" class="w-10 h-10 rounded-full border-2 border-slate-600">
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm font-semibold text-white">Fernanda Lima</p>
+                    <p class="text-xs text-slate-400">Consumidor vs. Loja</p>
                 </div>
             </button>
         </div>
@@ -205,30 +241,93 @@
                     {
                         tipo: "Sentença",
                         data: "Hoje, 09:30",
-                        titulo: "Sentença Favorável (Vitória)",
-                        resumo: "O Juiz condenou a Gol a pagar R$ 8.000,00 por danos morais + devolução da mala.",
-                        msg: "Olá Maria! Tenho uma ótima notícia! 🎉\n\nSaiu a sentença do processo e GANHAMOS! O juiz condenou a empresa a pagar R$ 8.000,00 de danos morais.\n\nFoi uma vitória importante! Te ligo em breve.",
+                        titulo: "Sentença Favorável — Vitória Total!",
+                        resumo: "Excelente notícia! O Juiz reconheceu todos os danos sofridos e condenou a GOL Linhas Aéreas ao pagamento de R$ 8.000,00 por danos morais, além da restituição integral do valor da bagagem extraviada. A empresa ainda terá que arcar com custas processuais e honorários advocatícios.",
+                        msg: "Olá Maria! Tenho uma ótima notícia! 🎉\n\nSaiu a sentença do seu processo contra a GOL e GANHAMOS! O juiz reconheceu todo o transtorno que você passou e condenou a empresa a pagar R$ 8.000,00 de indenização por danos morais, além de devolver o valor da sua mala.\n\nFoi uma vitória completa! Vou te ligar em breve para explicar os próximos passos. Parabéns!",
                         cor: "green", icon: "fa-trophy"
                     },
                     {
                         tipo: "Audiência",
                         data: "10 MAI 2025",
-                        titulo: "Audiência de Conciliação",
-                        resumo: "Tentativa de acordo frustrada. Empresa ofereceu apenas R$ 500,00.",
-                        msg: "Oi Maria. Na audiência de hoje a empresa ofereceu um valor muito baixo (R$ 500), então recusamos. Vamos deixar o juiz decidir.",
+                        titulo: "Audiência de Conciliação Realizada",
+                        resumo: "A audiência de conciliação foi realizada, mas não houve acordo. A GOL apresentou uma proposta irrisória de apenas R$ 500,00, muito abaixo do prejuízo comprovado. Diante da recusa fundamentada, o processo seguirá para julgamento pelo magistrado.",
+                        msg: "Oi Maria, tudo bem?\n\nHoje foi a audiência de conciliação. Infelizmente, a GOL ofereceu apenas R$ 500 de acordo — um valor muito baixo considerando todo o seu prejuízo e transtorno. Recusamos essa proposta.\n\nAgora o juiz vai analisar todas as provas e decidir. Estou confiante que teremos um resultado positivo!",
                         cor: "yellow", icon: "fa-handshake-slash"
                     },
                     {
                         tipo: "Decisão",
                         data: "15 FEV 2025",
-                        titulo: "Liminar Deferida",
-                        resumo: "Juiz aceitou o pedido inicial e intimou a empresa para defesa.",
-                        msg: "Boa notícia, Maria! O juiz aceitou nosso pedido inicial e já mandou a Gol se explicar.",
+                        titulo: "Petição Inicial Aceita — Processo Iniciado",
+                        resumo: "O juiz analisou a petição inicial e determinou a citação da GOL Linhas Aéreas para apresentar defesa no prazo legal de 15 dias. A empresa foi oficialmente notificada sobre o processo e deverá se manifestar sobre as alegações.",
+                        msg: "Boa notícia, Maria! 📋\n\nO juiz analisou nosso pedido e aceitou! O processo está oficialmente em andamento. A GOL já foi notificada e terá que apresentar a defesa dela.\n\nVou acompanhar tudo de perto e te mantenho informada sobre qualquer novidade!",
                         cor: "blue", icon: "fa-gavel"
                     }
                 ]
             },
-            'joao': { processo: "000451-22.2025 • Aguardando...", timeline: [] }
+            'joao': { processo: "000451-22.2025 • Revisional Bancária", timeline: [] },
+            'ana': {
+                processo: "1234567-89.2024 • Trabalhista vs. Empresa X",
+                timeline: [
+                    {
+                        tipo: "Recurso",
+                        data: "28 NOV 2025",
+                        titulo: "Recurso da Empresa Negado",
+                        resumo: "O Tribunal Regional do Trabalho manteve integralmente a decisão de primeira instância. O recurso da empresa foi considerado improcedente, confirmando o direito ao recebimento de todas as verbas rescisórias e horas extras reconhecidas.",
+                        msg: "Ana, excelente notícia! 🎉\n\nO recurso que a empresa entrou foi NEGADO pelo Tribunal! Isso significa que a decisão anterior foi mantida e você continua com direito a receber tudo que foi reconhecido.\n\nAgora vamos para a fase de execução para receber os valores. Te ligo para explicar melhor!",
+                        cor: "green", icon: "fa-scale-balanced"
+                    },
+                    {
+                        tipo: "Sentença",
+                        data: "05 SET 2025",
+                        titulo: "Sentença Parcialmente Procedente",
+                        resumo: "O juiz reconheceu o vínculo empregatício e condenou a empresa ao pagamento de verbas rescisórias, horas extras dos últimos 2 anos e FGTS não depositado. Valor estimado da condenação: R$ 45.000,00.",
+                        msg: "Oi Ana! Saiu a sentença do seu processo. 📋\n\nO juiz reconheceu que você tinha direito às horas extras e às verbas que não foram pagas. A empresa foi condenada a pagar aproximadamente R$ 45.000,00!\n\nEles ainda podem recorrer, mas estamos em uma boa posição. Qualquer novidade te aviso!",
+                        cor: "blue", icon: "fa-gavel"
+                    }
+                ]
+            },
+            'carlos': {
+                processo: "9876543-21.2024 • Divórcio Litigioso",
+                timeline: [
+                    {
+                        tipo: "Decisão",
+                        data: "20 NOV 2025",
+                        titulo: "Partilha de Bens Definida",
+                        resumo: "O juiz determinou a partilha igualitária dos bens do casal, incluindo o imóvel residencial e o veículo. A guarda compartilhada dos filhos foi estabelecida, com alternância semanal e pensão alimentícia fixada em 30% dos rendimentos.",
+                        msg: "Carlos, saiu a decisão sobre a partilha. ⚖️\n\nO juiz definiu que os bens serão divididos igualmente. O apartamento será vendido e o valor dividido, e o carro ficará com você mediante compensação.\n\nA guarda dos filhos será compartilhada, alternando a cada semana. A pensão foi fixada em 30% da sua renda.\n\nVamos conversar sobre os detalhes?",
+                        cor: "blue", icon: "fa-house-chimney"
+                    },
+                    {
+                        tipo: "Audiência",
+                        data: "10 OUT 2025",
+                        titulo: "Audiência de Mediação Frustrada",
+                        resumo: "As partes não chegaram a um acordo amigável durante a mediação. A ex-cônjuge manteve as exigências quanto à pensão e a disputa sobre a guarda. O processo seguirá para instrução e julgamento.",
+                        msg: "Oi Carlos. Infelizmente não conseguimos um acordo na audiência de hoje.\n\nA outra parte manteve as posições e não houve flexibilidade. Agora o juiz vai ouvir as testemunhas e decidir. Estou preparando tudo para a próxima fase.\n\nFique tranquilo, vamos resolver isso!",
+                        cor: "yellow", icon: "fa-users"
+                    }
+                ]
+            },
+            'fernanda': {
+                processo: "5555555-00.2025 • Consumidor vs. Loja",
+                timeline: [
+                    {
+                        tipo: "Acordo",
+                        data: "01 DEZ 2025",
+                        titulo: "Acordo Homologado — Caso Encerrado!",
+                        resumo: "As partes celebraram acordo que foi homologado pelo juiz. A loja concordou em devolver o valor integral do produto (R$ 3.500,00), pagar indenização de R$ 2.000,00 por danos morais e arcar com as custas processuais.",
+                        msg: "Fernanda, ótima notícia! 🎊\n\nFechamos um acordo muito bom! A loja vai devolver os R$ 3.500,00 do produto defeituoso E ainda vai pagar R$ 2.000,00 de indenização pelo transtorno.\n\nO acordo já foi aprovado pelo juiz. O pagamento deve cair na sua conta em até 10 dias úteis. Caso encerrado com sucesso!",
+                        cor: "green", icon: "fa-handshake"
+                    },
+                    {
+                        tipo: "Citação",
+                        data: "15 NOV 2025",
+                        titulo: "Loja Citada — Defesa Apresentada",
+                        resumo: "A loja foi oficialmente citada e apresentou contestação alegando que o defeito foi causado por mau uso. No entanto, o laudo técnico juntado aos autos comprova que o problema é de fabricação.",
+                        msg: "Oi Fernanda! A loja respondeu ao processo.\n\nEles alegaram que você usou o produto de forma errada (claro que não é verdade! 😅). Mas temos o laudo técnico que prova que o defeito é de fábrica.\n\nVamos continuar firmes! O próximo passo é tentar uma conciliação.",
+                        cor: "blue", icon: "fa-file-lines"
+                    }
+                ]
+            }
         };
 
         // --- CONTROLLER ---
@@ -327,8 +426,17 @@
 
             setTimeout(() => {
                 clearInterval(interval);
-                db['joao'].timeline = db['maria'].timeline; // Popula dados
-                db['joao'].processo = "000451-22.2025 • Revisional (Processado)";
+                db['joao'].timeline = [
+                    {
+                        tipo: "Petição",
+                        data: "Hoje, 14:20",
+                        titulo: "Processo Distribuído com Sucesso",
+                        resumo: "A ação revisional foi protocolada e distribuída para a 5ª Vara Cível. O banco será citado para apresentar os contratos originais e demonstrar a legalidade dos juros cobrados.",
+                        msg: "Olá João! Seu processo contra o banco foi oficialmente protocolado! 📋\n\nAgora o banco será notificado e terá que apresentar todos os contratos. Vamos analisar cada taxa cobrada para identificar os abusos.\n\nTe mantenho atualizado sobre os próximos passos!",
+                        cor: "blue", icon: "fa-file-circle-check"
+                    }
+                ];
+                db['joao'].processo = "000451-22.2025 • Revisional Bancária";
                 showTimeline('joao');
             }, 3000);
         }
