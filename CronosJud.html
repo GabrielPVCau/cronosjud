@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CronosJud | MVP Demo</title>
+    
+    <!-- Bibliotecas -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: { 900: '#0F172A', 800: '#1E293B', 500: '#3B82F6' },
+                        ai: { 50: '#F5F3FF', 100: '#EDE9FE', 600: '#7C3AED' }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* UI Polish */
+        body { background-color: #F8FAFC; }
+        .glass { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(8px); }
+        
+        /* Animações */
+        .fade-in { animation: fadeIn 0.6s ease-out forwards; }
+        .slide-up { animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+
+        /* Timeline Connector Clean */
+        .timeline-line {
+            position: absolute; left: 27px; top: 30px; bottom: 0; width: 2px; background: #E2E8F0; z-index: 0;
+        }
+
+        /* Scrollbar Invisível mas funcional */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="text-slate-800 h-screen flex overflow-hidden">
+
+    <!-- 1. SIDEBAR (Navegação) -->
+    <aside class="w-72 bg-brand-900 text-white flex flex-col shadow-2xl z-20 transition-all">
+        <!-- Brand -->
+        <div class="p-6 h-20 flex items-center gap-3 border-b border-slate-800/50">
+            <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/30">
+                <i class="fa-solid fa-gavel text-white text-xs"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg tracking-tight">CronosJud</h1>
+                <p class="text-[10px] text-slate-400 font-medium uppercase tracking-widest">Advocacia 4.0</p>
+            </div>
+        </div>
+
+        <!-- Clientes Lista -->
+        <div class="flex-1 overflow-y-auto py-6 space-y-1 no-scrollbar">
+            <div class="px-6 mb-3 flex justify-between items-center">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Processos Ativos</span>
+                <span class="bg-blue-600 text-white text-[10px] px-1.5 rounded font-bold">2</span>
+            </div>
+            
+            <!-- Cliente Demo (Maria) -->
+            <button onclick="switchClient('maria')" id="btn-maria" class="w-full text-left flex items-center px-6 py-4 bg-brand-800 border-l-4 border-blue-500 transition-all hover:bg-slate-800 group">
+                <div class="relative">
+                    <img src="https://ui-avatars.com/api/?name=Maria+Silva&background=0D8ABC&color=fff" class="w-10 h-10 rounded-full border-2 border-slate-600 group-hover:border-white transition-colors">
+                    <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-brand-900 rounded-full"></span>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm font-semibold text-white group-hover:text-blue-200 transition">Maria da Silva</p>
+                    <p class="text-xs text-slate-400 truncate w-36 opacity-80">Indenização vs. GOL</p>
+                </div>
+            </button>
+
+            <!-- Cliente Demo (João - Vazio) -->
+            <button onclick="switchClient('joao')" id="btn-joao" class="w-full text-left flex items-center px-6 py-4 border-l-4 border-transparent hover:bg-slate-800 transition-all opacity-60 hover:opacity-100">
+                <div class="relative">
+                    <img src="https://ui-avatars.com/api/?name=Joao+Souza&background=random" class="w-10 h-10 rounded-full border-2 border-slate-600">
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm font-semibold text-white">João Souza</p>
+                    <p class="text-xs text-slate-400">Revisional Bancária</p>
+                </div>
+            </button>
+        </div>
+
+        <!-- CTA Upload -->
+        <div class="p-4 bg-brand-900 border-t border-slate-800">
+            <button onclick="resetToUpload()" class="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white py-3.5 rounded-xl shadow-lg font-medium transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2 group">
+                <i class="fa-solid fa-cloud-arrow-up group-hover:-translate-y-1 transition-transform"></i> Novo Processo
+            </button>
+        </div>
+    </aside>
+
+    <!-- 2. MAIN AREA -->
+    <main class="flex-1 flex flex-col relative bg-slate-50">
+        
+        <!-- Top Bar -->
+        <header class="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-8 sticky top-0 z-10">
+            <div>
+                <h2 class="text-xl font-bold text-slate-800 flex items-center gap-3">
+                    <span id="process-number">5002819-88.2024.8.16.0001</span>
+                    <span id="status-badge" class="hidden px-2.5 py-1 bg-green-100 text-green-700 text-[10px] font-bold uppercase rounded-full tracking-wide"><i class="fa-solid fa-check-circle mr-1"></i>Atualizado</span>
+                </h2>
+                <p class="text-xs text-slate-400 mt-1">Última sincronização: Há 2 minutos via Projudi</p>
+            </div>
+            <div class="flex items-center gap-6">
+                <div class="flex items-center gap-3 pr-6 border-r border-slate-200">
+                    <span class="text-sm font-medium text-slate-600 text-right">Dr. Mendes<br><span class="text-xs text-slate-400 font-normal">Sócio</span></span>
+                    <img src="https://ui-avatars.com/api/?name=Dr+Mendes&background=1E293B&color=fff" class="w-10 h-10 rounded-full shadow-sm">
+                </div>
+                <button class="text-slate-400 hover:text-blue-600 transition"><i class="fa-solid fa-gear text-xl"></i></button>
+            </div>
+        </header>
+
+        <!-- VIEW A: UPLOAD (Para simular o início) -->
+        <div id="view-upload" class="hidden absolute inset-0 top-20 bg-slate-50 z-10 flex flex-col items-center justify-center p-8 fade-in">
+            <div class="max-w-md w-full text-center">
+                <div onclick="startSimulation()" class="border-4 border-dashed border-slate-300 bg-white rounded-3xl p-12 transition-all hover:border-blue-500 hover:shadow-xl cursor-pointer group">
+                    <div class="w-20 h-20 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fa-solid fa-file-pdf text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2">Importar Autos</h3>
+                    <p class="text-slate-500 mb-8 text-sm leading-relaxed">Arraste o PDF integral do processo ou digite o número do CNJ para busca automática.</p>
+                    <span class="px-6 py-3 bg-blue-600 text-white rounded-full text-sm font-bold shadow-lg shadow-blue-500/30 group-hover:bg-blue-700 transition">Simular Importação</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW B: LOADING (Para mostrar que tem IA) -->
+        <div id="view-loading" class="hidden absolute inset-0 top-20 bg-white/90 z-20 flex flex-col items-center justify-center fade-in">
+            <div class="w-20 h-20 mb-6 relative">
+                <div class="absolute inset-0 border-4 border-slate-100 rounded-full"></div>
+                <div class="absolute inset-0 border-4 border-ai-600 rounded-full border-t-transparent animate-spin"></div>
+                <i class="fa-solid fa-wand-magic-sparkles absolute inset-0 flex items-center justify-center text-ai-600 text-xl animate-pulse"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-800">IA Analisando Documentos...</h3>
+            <p id="loading-text" class="text-slate-500 mt-2 text-sm font-mono">Lendo página 1 de 352...</p>
+        </div>
+
+        <!-- VIEW C: TIMELINE (O Produto Final) -->
+        <div id="view-timeline" class="flex-1 overflow-y-auto p-8 relative scroll-smooth">
+            <div class="max-w-4xl mx-auto pb-20 pl-4">
+                <!-- Linha Vertical -->
+                <div class="timeline-line"></div>
+                
+                <!-- Cards Injetados via JS -->
+                <div id="timeline-container" class="space-y-10"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL WHATSAPP (A Feature Matadora) -->
+    <div id="modal-whatsapp" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center opacity-0 transition-all duration-300">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden transform scale-95 transition-all duration-300" id="modal-content">
+            <!-- Header Modal -->
+            <div class="bg-[#075E54] p-5 flex justify-between items-center text-white">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                        <i class="fa-brands fa-whatsapp text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-base">Notificar Cliente</h3>
+                        <p class="text-[11px] opacity-80 uppercase tracking-wider">Via WhatsApp Business API</p>
+                    </div>
+                </div>
+                <button onclick="closeModal()" class="w-8 h-8 rounded-full hover:bg-white/20 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <!-- Body Modal -->
+            <div class="p-6 bg-[#E5DDD5]">
+                <div class="bg-white rounded-lg shadow-sm p-4 relative mb-4 border border-slate-100">
+                    <div class="absolute -left-2 top-4 w-4 h-4 bg-white transform rotate-45 border-l border-b border-slate-100"></div>
+                    
+                    <div class="flex justify-between mb-2">
+                        <label class="text-[10px] font-bold text-ai-600 uppercase tracking-wide"><i class="fa-solid fa-robot mr-1"></i>Sugestão da IA</label>
+                        <span class="text-[10px] text-slate-400">Editável pelo advogado</span>
+                    </div>
+                    
+                    <textarea id="whatsapp-text" class="w-full h-32 text-sm text-slate-800 leading-relaxed resize-none focus:outline-none bg-transparent" spellcheck="false"></textarea>
+                </div>
+                
+                <button onclick="sendWhatsapp()" class="w-full bg-[#25D366] hover:bg-[#128C7E] text-white font-bold py-4 rounded-full shadow-lg transition-all transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2">
+                    <span>Aprovar e Enviar</span> <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LÓGICA -->
+    <script>
+        // --- DADOS (Simulando o Backend) ---
+        const db = {
+            'maria': {
+                processo: "5002819-88.2024 • Indenização GOL",
+                timeline: [
+                    {
+                        tipo: "Sentença",
+                        data: "Hoje, 09:30",
+                        titulo: "Sentença Favorável (Vitória)",
+                        resumo: "O Juiz condenou a Gol a pagar R$ 8.000,00 por danos morais + devolução da mala.",
+                        msg: "Olá Maria! Tenho uma ótima notícia! 🎉\n\nSaiu a sentença do processo e GANHAMOS! O juiz condenou a empresa a pagar R$ 8.000,00 de danos morais.\n\nFoi uma vitória importante! Te ligo em breve.",
+                        cor: "green", icon: "fa-trophy"
+                    },
+                    {
+                        tipo: "Audiência",
+                        data: "10 MAI 2025",
+                        titulo: "Audiência de Conciliação",
+                        resumo: "Tentativa de acordo frustrada. Empresa ofereceu apenas R$ 500,00.",
+                        msg: "Oi Maria. Na audiência de hoje a empresa ofereceu um valor muito baixo (R$ 500), então recusamos. Vamos deixar o juiz decidir.",
+                        cor: "yellow", icon: "fa-handshake-slash"
+                    },
+                    {
+                        tipo: "Decisão",
+                        data: "15 FEV 2025",
+                        titulo: "Liminar Deferida",
+                        resumo: "Juiz aceitou o pedido inicial e intimou a empresa para defesa.",
+                        msg: "Boa notícia, Maria! O juiz aceitou nosso pedido inicial e já mandou a Gol se explicar.",
+                        cor: "blue", icon: "fa-gavel"
+                    }
+                ]
+            },
+            'joao': { processo: "000451-22.2025 • Aguardando...", timeline: [] }
+        };
+
+        // --- CONTROLLER ---
+        function switchClient(id) {
+            // UI Toggle
+            document.querySelectorAll('aside button').forEach(b => {
+                b.classList.remove('bg-brand-800', 'border-blue-500');
+                b.classList.add('border-transparent');
+                b.querySelector('span.absolute')?.remove();
+            });
+            const btn = document.getElementById('btn-' + id);
+            btn.classList.add('bg-brand-800', 'border-blue-500');
+            btn.classList.remove('border-transparent');
+            btn.querySelector('.relative').innerHTML += '<span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-brand-900 rounded-full"></span>';
+
+            // View Logic
+            const data = db[id];
+            if (data.timeline.length === 0) {
+                resetToUpload();
+            } else {
+                showTimeline(id);
+            }
+        }
+
+        function renderTimeline(id) {
+            const container = document.getElementById('timeline-container');
+            container.innerHTML = '';
+            document.getElementById('process-number').innerText = db[id].processo;
+            document.getElementById('status-badge').classList.remove('hidden');
+
+            db[id].timeline.forEach((item, idx) => {
+                const theme = getTheme(item.cor);
+                
+                const html = `
+                <div class="relative pl-12 sm:pl-16 group slide-up" style="animation-delay: ${idx * 150}ms">
+                    <!-- Icone da Linha -->
+                    <div class="absolute left-0 sm:left-1 top-0 w-14 h-14 bg-white border-4 ${theme.border} rounded-full flex items-center justify-center z-10 shadow-sm transition-transform group-hover:scale-110">
+                        <i class="fa-solid ${item.icon} text-xl ${theme.text}"></i>
+                    </div>
+
+                    <!-- Card Principal -->
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-lg transition-all duration-300 relative">
+                        <div class="flex flex-col md:flex-row justify-between items-start gap-4 mb-4">
+                            <div>
+                                <span class="inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider mb-2 ${theme.bgBad} ${theme.textBad}">
+                                    ${item.tipo}
+                                </span>
+                                <h3 class="text-lg font-bold text-slate-800">${item.titulo}</h3>
+                                <p class="text-xs text-slate-400 mt-1 font-mono uppercase"><i class="fa-regular fa-calendar mr-1"></i> ${item.data}</p>
+                            </div>
+                            <button onclick="openModal('${id}', ${idx})" class="flex items-center gap-2 bg-[#25D366] hover:bg-[#128C7E] text-white px-4 py-2 rounded-full text-sm font-bold shadow-md transition-all hover:-translate-y-1">
+                                <i class="fa-brands fa-whatsapp"></i> <span class="hidden md:inline">Notificar Cliente</span>
+                            </button>
+                        </div>
+
+                        <!-- O Poder da IA (Box Destacado) -->
+                        <div class="p-4 rounded-xl bg-slate-50 border-l-4 ${theme.border} flex gap-4">
+                            <div class="pt-1"><i class="fa-solid fa-wand-magic-sparkles text-ai-600"></i></div>
+                            <div>
+                                <p class="text-xs font-bold text-ai-600 mb-1 uppercase">Tradução para o Cliente</p>
+                                <p class="text-sm text-slate-700 leading-relaxed">${item.resumo}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+                container.innerHTML += html;
+            });
+        }
+
+        function getTheme(color) {
+            const map = {
+                green: { border: 'border-green-500', text: 'text-green-600', bgBad: 'bg-green-100', textBad: 'text-green-700' },
+                yellow: { border: 'border-amber-400', text: 'text-amber-500', bgBad: 'bg-amber-100', textBad: 'text-amber-700' },
+                blue: { border: 'border-blue-500', text: 'text-blue-600', bgBad: 'bg-blue-100', textBad: 'text-blue-700' }
+            };
+            return map[color];
+        }
+
+        // --- FLUXO DE DEMONSTRAÇÃO ---
+        function resetToUpload() {
+            document.getElementById('view-timeline').classList.add('hidden');
+            document.getElementById('view-loading').classList.add('hidden');
+            document.getElementById('view-upload').classList.remove('hidden');
+            document.getElementById('status-badge').classList.add('hidden');
+            document.getElementById('process-number').innerText = "Novo Processo";
+        }
+
+        function startSimulation() {
+            document.getElementById('view-upload').classList.add('hidden');
+            document.getElementById('view-loading').classList.remove('hidden');
+            
+            const texts = ["Conectando Tribunal...", "OCR: Lendo PDF...", "IA: Gerando Resumos..."];
+            let i = 0;
+            const el = document.getElementById('loading-text');
+            const interval = setInterval(() => { if(i<texts.length) el.innerText = texts[i++]; }, 800);
+
+            setTimeout(() => {
+                clearInterval(interval);
+                db['joao'].timeline = db['maria'].timeline; // Popula dados
+                db['joao'].processo = "000451-22.2025 • Revisional (Processado)";
+                showTimeline('joao');
+            }, 3000);
+        }
+
+        function showTimeline(id) {
+            document.getElementById('view-loading').classList.add('hidden');
+            document.getElementById('view-upload').classList.add('hidden');
+            document.getElementById('view-timeline').classList.remove('hidden');
+            renderTimeline(id);
+        }
+
+        // --- MODAL ---
+        const modal = document.getElementById('modal-whatsapp');
+        function openModal(id, idx) {
+            document.getElementById('whatsapp-text').value = db[id].timeline[idx].msg;
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                document.getElementById('modal-content').classList.remove('scale-95');
+                document.getElementById('modal-content').classList.add('scale-100');
+            }, 10);
+        }
+        function closeModal() {
+            modal.classList.add('opacity-0');
+            document.getElementById('modal-content').classList.remove('scale-100');
+            document.getElementById('modal-content').classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+        function sendWhatsapp() {
+            const text = encodeURIComponent(document.getElementById('whatsapp-text').value);
+            window.open(`https://wa.me/?text=${text}`, '_blank');
+            closeModal();
+        }
+        modal.addEventListener('click', (e) => { if(e.target===modal) closeModal(); });
+
+        // Início
+        window.onload = () => renderTimeline('maria');
+    </script>
+</body>
+</html>
