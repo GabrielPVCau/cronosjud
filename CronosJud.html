@@ -47,12 +47,60 @@
         .no-scrollbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
         .no-scrollbar::-webkit-scrollbar-thumb:hover { background: #64748B; }
         .no-scrollbar { scrollbar-width: thin; scrollbar-color: #475569 transparent; }
+
+        /* Mobile Responsivo */
+        @media (max-width: 768px) {
+            .sidebar-mobile {
+                position: fixed;
+                left: -100%;
+                top: 0;
+                height: 100vh;
+                z-index: 50;
+                transition: left 0.3s ease-in-out;
+            }
+            .sidebar-mobile.open {
+                left: 0;
+            }
+            .sidebar-overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 40;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.3s;
+            }
+            .sidebar-overlay.open {
+                opacity: 1;
+                pointer-events: auto;
+            }
+            .timeline-line {
+                left: 20px;
+            }
+        }
+
+        /* Hamburger Menu Animation */
+        .hamburger-line {
+            transition: all 0.3s ease;
+        }
+        .hamburger.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        .hamburger.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
     </style>
 </head>
 <body class="text-slate-800 h-screen flex overflow-hidden">
 
+    <!-- Overlay Mobile -->
+    <div id="sidebar-overlay" class="sidebar-overlay md:hidden" onclick="toggleSidebar()"></div>
+
     <!-- 1. SIDEBAR (Navegação) -->
-    <aside class="w-72 bg-brand-900 text-white flex flex-col shadow-2xl z-20 transition-all">
+    <aside id="sidebar" class="w-72 bg-brand-900 text-white flex flex-col shadow-2xl z-20 transition-all sidebar-mobile md:relative md:left-0">
         <!-- Brand -->
         <div class="p-6 h-20 flex items-center gap-3 border-b border-slate-800/50">
             <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/30">
@@ -140,39 +188,48 @@
     <main class="flex-1 flex flex-col relative bg-slate-50">
         
         <!-- Top Bar -->
-        <header class="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-8 sticky top-0 z-10">
-            <div>
-                <h2 class="text-xl font-bold text-slate-800 flex items-center gap-3">
+        <header class="h-16 md:h-20 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-8 sticky top-0 z-10">
+            <div class="flex items-center gap-3">
+                <!-- Hamburger Menu (Mobile) -->
+                <button id="hamburger-btn" onclick="toggleSidebar()" class="hamburger md:hidden w-10 h-10 flex flex-col items-center justify-center gap-1.5 rounded-lg hover:bg-slate-100 transition">
+                    <span class="hamburger-line w-6 h-0.5 bg-slate-600 rounded"></span>
+                    <span class="hamburger-line w-6 h-0.5 bg-slate-600 rounded"></span>
+                    <span class="hamburger-line w-6 h-0.5 bg-slate-600 rounded"></span>
+                </button>
+                <div>
+                <h2 class="text-base md:text-xl font-bold text-slate-800 flex items-center gap-2 md:gap-3">
                     <span id="process-number">5002819-88.2024.8.16.0001</span>
-                    <span id="status-badge" class="hidden px-2.5 py-1 bg-green-100 text-green-700 text-[10px] font-bold uppercase rounded-full tracking-wide"><i class="fa-solid fa-check-circle mr-1"></i>Atualizado</span>
+                    <span id="status-badge" class="hidden px-2 py-0.5 md:px-2.5 md:py-1 bg-green-100 text-green-700 text-[8px] md:text-[10px] font-bold uppercase rounded-full tracking-wide"><i class="fa-solid fa-check-circle mr-1"></i>Atualizado</span>
                 </h2>
-                <p class="text-xs text-slate-400 mt-1">Última sincronização: Há 2 minutos via Projudi</p>
-            </div>
-            <div class="flex items-center gap-6">
-                <div class="flex items-center gap-3 pr-6 border-r border-slate-200">
-                    <span class="text-sm font-medium text-slate-600 text-right">Dr. Mendes<br><span class="text-xs text-slate-400 font-normal">Sócio</span></span>
-                    <img src="https://ui-avatars.com/api/?name=Dr+Mendes&background=1E293B&color=fff" class="w-10 h-10 rounded-full shadow-sm">
+                <p class="text-[10px] md:text-xs text-slate-400 mt-0.5 md:mt-1 hidden sm:block">Última sincronização: Há 2 minutos via Projudi</p>
                 </div>
-                <button class="text-slate-400 hover:text-blue-600 transition"><i class="fa-solid fa-gear text-xl"></i></button>
+            </div>
+            <div class="flex items-center gap-2 md:gap-6">
+                <div class="hidden sm:flex items-center gap-3 pr-4 md:pr-6 border-r border-slate-200">
+                    <span class="text-xs md:text-sm font-medium text-slate-600 text-right">Dr. Mendes<br><span class="text-[10px] md:text-xs text-slate-400 font-normal">Sócio</span></span>
+                    <img src="https://ui-avatars.com/api/?name=Dr+Mendes&background=1E293B&color=fff" class="w-8 h-8 md:w-10 md:h-10 rounded-full shadow-sm">
+                </div>
+                <img src="https://ui-avatars.com/api/?name=Dr+Mendes&background=1E293B&color=fff" class="w-8 h-8 rounded-full shadow-sm sm:hidden">
+                <button class="text-slate-400 hover:text-blue-600 transition"><i class="fa-solid fa-gear text-lg md:text-xl"></i></button>
             </div>
         </header>
 
         <!-- VIEW A: UPLOAD (Para simular o início) -->
-        <div id="view-upload" class="hidden absolute inset-0 top-20 bg-slate-50 z-10 flex flex-col items-center justify-center p-8 fade-in">
+        <div id="view-upload" class="hidden absolute inset-0 top-16 md:top-20 bg-slate-50 z-10 flex flex-col items-center justify-center p-4 md:p-8 fade-in">
             <div class="max-w-md w-full text-center">
-                <div onclick="startSimulation()" class="border-4 border-dashed border-slate-300 bg-white rounded-3xl p-12 transition-all hover:border-blue-500 hover:shadow-xl cursor-pointer group">
-                    <div class="w-20 h-20 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                        <i class="fa-solid fa-file-pdf text-3xl"></i>
+                <div onclick="startSimulation()" class="border-4 border-dashed border-slate-300 bg-white rounded-2xl md:rounded-3xl p-6 md:p-12 transition-all hover:border-blue-500 hover:shadow-xl cursor-pointer group">
+                    <div class="w-16 h-16 md:w-20 md:h-20 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fa-solid fa-file-pdf text-2xl md:text-3xl"></i>
                     </div>
-                    <h3 class="text-2xl font-bold text-slate-800 mb-2">Importar Autos</h3>
-                    <p class="text-slate-500 mb-8 text-sm leading-relaxed">Arraste o PDF integral do processo ou digite o número do CNJ para busca automática.</p>
-                    <span class="px-6 py-3 bg-blue-600 text-white rounded-full text-sm font-bold shadow-lg shadow-blue-500/30 group-hover:bg-blue-700 transition">Simular Importação</span>
+                    <h3 class="text-xl md:text-2xl font-bold text-slate-800 mb-2">Importar Autos</h3>
+                    <p class="text-slate-500 mb-6 md:mb-8 text-xs md:text-sm leading-relaxed">Arraste o PDF integral do processo ou digite o número do CNJ para busca automática.</p>
+                    <span class="px-5 py-2.5 md:px-6 md:py-3 bg-blue-600 text-white rounded-full text-xs md:text-sm font-bold shadow-lg shadow-blue-500/30 group-hover:bg-blue-700 transition">Simular Importação</span>
                 </div>
             </div>
         </div>
 
         <!-- VIEW B: LOADING (Para mostrar que tem IA) -->
-        <div id="view-loading" class="hidden absolute inset-0 top-20 bg-white/90 z-20 flex flex-col items-center justify-center fade-in">
+        <div id="view-loading" class="hidden absolute inset-0 top-16 md:top-20 bg-white/90 z-20 flex flex-col items-center justify-center fade-in">
             <div class="w-20 h-20 mb-6 relative">
                 <div class="absolute inset-0 border-4 border-slate-100 rounded-full"></div>
                 <div class="absolute inset-0 border-4 border-ai-600 rounded-full border-t-transparent animate-spin"></div>
@@ -183,8 +240,8 @@
         </div>
 
         <!-- VIEW C: TIMELINE (O Produto Final) -->
-        <div id="view-timeline" class="flex-1 overflow-y-auto p-8 relative scroll-smooth">
-            <div class="max-w-4xl mx-auto pb-20 pl-4">
+        <div id="view-timeline" class="flex-1 overflow-y-auto p-4 md:p-8 relative scroll-smooth">
+            <div class="max-w-4xl mx-auto pb-20 pl-2 md:pl-4">
                 <!-- Linha Vertical -->
                 <div class="timeline-line"></div>
                 
@@ -195,8 +252,8 @@
     </main>
 
     <!-- MODAL WHATSAPP (A Feature Matadora) -->
-    <div id="modal-whatsapp" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center opacity-0 transition-all duration-300">
-        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden transform scale-95 transition-all duration-300" id="modal-content">
+    <div id="modal-whatsapp" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 opacity-0 transition-all duration-300">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden transform scale-95 transition-all duration-300 max-h-[90vh] overflow-y-auto" id="modal-content">
             <!-- Header Modal -->
             <div class="bg-[#075E54] p-5 flex justify-between items-center text-white">
                 <div class="flex items-center gap-3">
@@ -362,33 +419,35 @@
                 const theme = getTheme(item.cor);
                 
                 const html = `
-                <div class="relative pl-12 sm:pl-16 group slide-up" style="animation-delay: ${idx * 150}ms">
+                <div class="relative pl-10 sm:pl-16 group slide-up" style="animation-delay: ${idx * 150}ms">
                     <!-- Icone da Linha -->
-                    <div class="absolute left-0 sm:left-1 top-0 w-14 h-14 bg-white border-4 ${theme.border} rounded-full flex items-center justify-center z-10 shadow-sm transition-transform group-hover:scale-110">
-                        <i class="fa-solid ${item.icon} text-xl ${theme.text}"></i>
+                    <div class="absolute left-0 sm:left-1 top-0 w-10 h-10 sm:w-14 sm:h-14 bg-white border-3 sm:border-4 ${theme.border} rounded-full flex items-center justify-center z-10 shadow-sm transition-transform group-hover:scale-110">
+                        <i class="fa-solid ${item.icon} text-base sm:text-xl ${theme.text}"></i>
                     </div>
 
                     <!-- Card Principal -->
-                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-lg transition-all duration-300 relative">
-                        <div class="flex flex-col md:flex-row justify-between items-start gap-4 mb-4">
-                            <div>
-                                <span class="inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider mb-2 ${theme.bgBad} ${theme.textBad}">
-                                    ${item.tipo}
-                                </span>
-                                <h3 class="text-lg font-bold text-slate-800">${item.titulo}</h3>
-                                <p class="text-xs text-slate-400 mt-1 font-mono uppercase"><i class="fa-regular fa-calendar mr-1"></i> ${item.data}</p>
+                    <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 hover:shadow-lg transition-all duration-300 relative">
+                        <div class="flex flex-col gap-3 sm:gap-4 mb-3 sm:mb-4">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
+                                <div class="flex-1">
+                                    <span class="inline-block px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider mb-1.5 sm:mb-2 ${theme.bgBad} ${theme.textBad}">
+                                        ${item.tipo}
+                                    </span>
+                                    <h3 class="text-sm sm:text-lg font-bold text-slate-800 leading-tight">${item.titulo}</h3>
+                                    <p class="text-[10px] sm:text-xs text-slate-400 mt-1 font-mono uppercase"><i class="fa-regular fa-calendar mr-1"></i> ${item.data}</p>
+                                </div>
+                                <button onclick="openModal('${id}', ${idx})" class="flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#128C7E] text-white px-3 py-2 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-bold shadow-md transition-all hover:-translate-y-1 w-full sm:w-auto">
+                                    <i class="fa-brands fa-whatsapp"></i> <span>Notificar Cliente</span>
+                                </button>
                             </div>
-                            <button onclick="openModal('${id}', ${idx})" class="flex items-center gap-2 bg-[#25D366] hover:bg-[#128C7E] text-white px-4 py-2 rounded-full text-sm font-bold shadow-md transition-all hover:-translate-y-1">
-                                <i class="fa-brands fa-whatsapp"></i> <span class="hidden md:inline">Notificar Cliente</span>
-                            </button>
                         </div>
 
                         <!-- O Poder da IA (Box Destacado) -->
-                        <div class="p-4 rounded-xl bg-slate-50 border-l-4 ${theme.border} flex gap-4">
-                            <div class="pt-1"><i class="fa-solid fa-wand-magic-sparkles text-ai-600"></i></div>
-                            <div>
-                                <p class="text-xs font-bold text-ai-600 mb-1 uppercase">Tradução para o Cliente</p>
-                                <p class="text-sm text-slate-700 leading-relaxed">${item.resumo}</p>
+                        <div class="p-3 sm:p-4 rounded-lg sm:rounded-xl bg-slate-50 border-l-3 sm:border-l-4 ${theme.border} flex gap-3 sm:gap-4">
+                            <div class="pt-0.5 sm:pt-1"><i class="fa-solid fa-wand-magic-sparkles text-ai-600 text-sm sm:text-base"></i></div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-[10px] sm:text-xs font-bold text-ai-600 mb-1 uppercase">Tradução para o Cliente</p>
+                                <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">${item.resumo}</p>
                             </div>
                         </div>
                     </div>
@@ -471,6 +530,37 @@
             closeModal();
         }
         modal.addEventListener('click', (e) => { if(e.target===modal) closeModal(); });
+
+        // --- MOBILE SIDEBAR ---
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            const hamburger = document.getElementById('hamburger-btn');
+            
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('open');
+            hamburger.classList.toggle('active');
+        }
+
+        // Fechar sidebar ao clicar em um cliente (mobile)
+        function closeSidebarOnMobile() {
+            if (window.innerWidth < 768) {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('sidebar-overlay');
+                const hamburger = document.getElementById('hamburger-btn');
+                
+                sidebar.classList.remove('open');
+                overlay.classList.remove('open');
+                hamburger.classList.remove('active');
+            }
+        }
+
+        // Atualizar switchClient para fechar sidebar no mobile
+        const originalSwitchClient = switchClient;
+        switchClient = function(id) {
+            originalSwitchClient(id);
+            closeSidebarOnMobile();
+        };
 
         // Início
         window.onload = () => renderTimeline('maria');
